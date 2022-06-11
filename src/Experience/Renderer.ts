@@ -6,16 +6,16 @@ import Experience from './Experience';
 export default class Renderer {
   private experience: Experience;
 
-  private instance! : THREE.WebGLRenderer;
+  private instance!: THREE.WebGLRenderer;
 
-  public controls! : TrackballControls;
+  public controls!: TrackballControls;
 
   constructor() {
     this.experience = new Experience();
     this.setInstance();
   }
 
-  private setInstance() : void {
+  private setInstance(): void {
     this.instance = new THREE.WebGLRenderer({
       alpha: false,
       antialias: true,
@@ -34,14 +34,15 @@ export default class Renderer {
     this.instance.shadowMap.needsUpdate = this.instance.shadowMap.enabled;
 
     this.controls = new TrackballControls(this.experience.camera.instance, this.experience.targetElement!);
+    this.controls.target.set(0, 0, -20);
   }
 
-  public resize() : void {
+  public resize(): void {
     this.instance.setSize(this.experience.config.width, this.experience.config.height);
     this.instance.setPixelRatio(this.experience.config.pixelRatio);
   }
 
-  public update() : void {
+  public update(): void {
     this.controls.update();
     this.instance.render(this.experience.scene, this.experience.camera.instance);
   }

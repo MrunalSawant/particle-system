@@ -2,7 +2,7 @@
 import * as THREE from 'three';
 import Experience from './Experience';
 import { PointSize, RayCasterThreshold } from '../Constant/Constant';
-import StarTexture from '../Assets/star.jpg';
+import StarTexture from '../Assets/star.png';
 
 export default class World {
   private experience: Experience;
@@ -11,9 +11,15 @@ export default class World {
 
   private rayCaster!: THREE.Raycaster;
 
+  private index!: number | undefined;
+
+  private topLeft!: THREE.Vector2;
+
   constructor() {
     this.experience = new Experience();
     this.mouse = new THREE.Vector2();
+    this.topLeft = new THREE.Vector2();
+
     this.init();
     this.setWorld();
 
@@ -30,6 +36,10 @@ export default class World {
     window.addEventListener('click', this.onClick.bind(this), false);
   }
 
+  public getMousePosition(): THREE.Vector2 {
+    return this.topLeft;
+  }
+
   private onClick(): void {
     this.rayCaster.setFromCamera(this.mouse, this.experience.camera.instance);
     const intersects = this.rayCaster.intersectObjects(this.experience.scene.children);
@@ -37,13 +47,22 @@ export default class World {
     const intersect = intersects.length > 0 ? intersects[0] : null;
 
     if (intersect) {
-      console.log(intersect.index);
+      this.index = intersect.index;
+    } else {
+      this.index = undefined;
     }
+  }
+
+  public getIndex(): number | undefined {
+    return this.index;
   }
 
   private onMouseMove(event: any): void {
     this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    this.topLeft.x = event.clientX;
+    this.topLeft.y = event.clientY;
   }
 
   private generatePointCloudGeometry(color: THREE.Color, length: number): THREE.BufferGeometry {
@@ -76,8 +95,7 @@ export default class World {
 
   private generateIndexedPointcloud(color: THREE.Color, length: number): THREE.Points {
     const geometry = this.generatePointCloudGeometry(color, length);
-    const numPoints = length;
-    const indices = new Uint16Array(numPoints);
+    const indices = new Uint16Array(length);
 
     for (let j = 0; j < length; j += 1) {
       indices[j] = j;
@@ -99,6 +117,5 @@ export default class World {
 
   public update(): void {
     // console.log(this.mouse);
-
   }
 }
