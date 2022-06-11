@@ -1,14 +1,15 @@
 {
   "files": {
-    "main.css": "/particle-system/static/css/main.f3bd3e67.css",
-    "main.js": "/particle-system/static/js/main.a0e5909e.js",
+    "main.css": "/particle-system/static/css/main.ab7dbda6.css",
+    "main.js": "/particle-system/static/js/main.e28c3d74.js",
+    "static/media/star.png": "/particle-system/static/media/star.d9afdfc3ad41a0de70da.png",
     "static/media/background.jpg": "/particle-system/static/media/background.8ce76f3bf868dccef911.jpg",
     "index.html": "/particle-system/index.html",
-    "main.f3bd3e67.css.map": "/particle-system/static/css/main.f3bd3e67.css.map",
-    "main.a0e5909e.js.map": "/particle-system/static/js/main.a0e5909e.js.map"
+    "main.ab7dbda6.css.map": "/particle-system/static/css/main.ab7dbda6.css.map",
+    "main.e28c3d74.js.map": "/particle-system/static/js/main.e28c3d74.js.map"
   },
   "entrypoints": [
-    "static/css/main.f3bd3e67.css",
-    "static/js/main.a0e5909e.js"
+    "static/css/main.ab7dbda6.css",
+    "static/js/main.e28c3d74.js"
   ]
 }
