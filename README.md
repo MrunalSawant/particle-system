@@ -20,4 +20,5 @@ npm run start
 [Live](https://mrunalsawant.github.io/particle-system/)
 
 ## demo
-![AYHWob8cal](https://user-images.githubusercontent.com/25613253/162580650-abf4fdcb-78e1-45eb-9848-c9949cdcfb8d.gif)
+![image](https://user-images.githubusercontent.com/25613253/173189083-e420d786-3fe9-4047-94cc-166451f20e62.png)
+
