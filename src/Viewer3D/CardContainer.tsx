@@ -5,7 +5,7 @@ import BasicCard from './Card';
 import Experience from '../Experience/Experience';
 
 export default function CardContainer(): ReactElement {
-    const [open, setOpen] = useState(true);
+    const [open, setOpen] = useState(false);
     const [index, setIndex] = useState(-1);
     const [top, setTop] = useState(0);
     const [left, setLeft] = useState(0);
