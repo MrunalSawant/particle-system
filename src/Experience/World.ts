@@ -2,6 +2,7 @@
 import * as THREE from 'three';
 import Experience from './Experience';
 import { PointSize, RayCasterThreshold } from '../Constant/Constant';
+import StarTexture from '../Assets/star.jpg';
 
 export default class World {
   private experience: Experience;
@@ -16,14 +17,13 @@ export default class World {
     this.init();
     this.setWorld();
 
-    const points = this.generateIndexedPointcloud(new THREE.Color(0, 1, 0), 10, 10);
+    const points = this.generateIndexedPointcloud(new THREE.Color(1, 1, 1), 1000);
     this.experience.scene.add(points);
     // this.setLight();
   }
 
   private init(): void {
     this.rayCaster = new THREE.Raycaster();
-
     this.rayCaster.params.Points = {
       threshold: RayCasterThreshold
     };
@@ -47,34 +47,30 @@ export default class World {
     this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
   }
 
-  private generatePointCloudGeometry(color: THREE.Color, width: number, length: number): THREE.BufferGeometry {
+  private generatePointCloudGeometry(color: THREE.Color, length: number): THREE.BufferGeometry {
     const geometry = new THREE.BufferGeometry();
-    const numPoints = width * length;
+    const numPoints = length;
 
     const positions = new Float32Array(numPoints * 3);
     const colors = new Float32Array(numPoints * 3);
 
     let k = 0;
 
-    for (let i = 0; i < width; i += 1) {
-      for (let j = 0; j < length; j += 1) {
-        const u = i / width;
-        const v = j / length;
-        const x = u - 0.5;
-        const y = (Math.cos(u * Math.PI * 4) + Math.sin(v * Math.PI * 8)) / 50;
-        const z = v - 0.5;
+    for (let i = 0; i < length; i += 1) {
+      const x = Math.random() * 10;
+      const y = Math.random() * 10;
+      const z = Math.random() * -10;
 
-        positions[3 * k] = x;
-        positions[3 * k + 1] = y;
-        positions[3 * k + 2] = z;
+      positions[3 * k] = x;
+      positions[3 * k + 1] = y;
+      positions[3 * k + 2] = z;
 
-        const intensity = (y + 0.1) * 5;
-        colors[3 * k] = color.r * intensity;
-        colors[3 * k + 1] = color.g * intensity;
-        colors[3 * k + 2] = color.b * intensity;
+      const intensity = Math.random() * 5;
+      colors[3 * k] = color.r * intensity;
+      colors[3 * k + 1] = color.g * intensity;
+      colors[3 * k + 2] = color.b * intensity;
 
-        k += 1;
-      }
+      k += 1;
     }
 
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
@@ -84,23 +80,23 @@ export default class World {
     return geometry;
   }
 
-  private generateIndexedPointcloud(color: THREE.Color, width: number, length: number): THREE.Points {
-    const geometry = this.generatePointCloudGeometry(color, width, length);
-    const numPoints = width * length;
+  private generateIndexedPointcloud(color: THREE.Color, length: number): THREE.Points {
+    const geometry = this.generatePointCloudGeometry(color, length);
+    const numPoints = length;
     const indices = new Uint16Array(numPoints);
 
     let k = 0;
 
-    for (let i = 0; i < width; i += 1) {
-      for (let j = 0; j < length; j += 1) {
-        indices[k] = k;
-        k += 1;
-      }
+    for (let j = 0; j < length; j += 1) {
+      indices[k] = k;
+      k += 1;
     }
 
     geometry.setIndex(new THREE.BufferAttribute(indices, 1));
 
-    const material = new THREE.PointsMaterial({ size: PointSize, vertexColors: true });
+    const textureLoader = new THREE.TextureLoader();
+    const texture = textureLoader.load(StarTexture);
+    const material = new THREE.PointsMaterial({ size: PointSize, vertexColors: true, map: texture });
 
     return new THREE.Points(geometry, material);
   }
