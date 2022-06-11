@@ -1,9 +1,9 @@
 {
-  "name": "three-js-react-typescript-template",
+  "name": "particle-system",
   "version": "0.1.0",
   "private": true,
   "author": "Mrunal Sawant",
-  "homepage": "https://mrunalsawant.github.io/three-js-react-typescript-template",
+  "homepage": "https://mrualsawant.github.io/particle-system",
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.2",

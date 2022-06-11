@@ -9,19 +9,19 @@ import World from './World';
 import { Config } from '../Utils/Config';
 
 export default class Experience {
-  static _instance:Experience;
+  static _instance: Experience;
 
-  public renderer! : Renderer;
+  public renderer!: Renderer;
 
-  public scene! : THREE.Scene;
+  public scene!: THREE.Scene;
 
-  public camera! : Camera;
+  public camera!: Camera;
 
-  public config! : Config;
+  public config!: Config;
 
-  public targetElement! : HTMLElement | null;
+  public targetElement!: HTMLElement | null;
 
-  public world! : World;
+  public world!: World;
 
   constructor() {
     if (Experience._instance) {
@@ -55,7 +55,7 @@ export default class Experience {
     this.renderer.resize();
   }
 
-  private setConfig() : void {
+  private setConfig(): void {
     // this.config.debug = false;
     // pixel ratio
     const pixelRatio = Math.min(Math.max(window.devicePixelRatio, 1), 2);
@@ -68,11 +68,11 @@ export default class Experience {
     };
   }
 
-  private setScene() : void {
+  private setScene(): void {
     this.scene = new THREE.Scene();
   }
 
-  private setCamera() : void {
+  private setCamera(): void {
     this.camera = new Camera();
   }
 
@@ -84,7 +84,7 @@ export default class Experience {
     this.world = new World();
   }
 
-  public update() : void {
+  public update(): void {
     this.camera.update();
 
     if (this.renderer) { this.renderer.update(); }
@@ -92,5 +92,7 @@ export default class Experience {
     window.requestAnimationFrame(() => {
       this.update();
     });
+
+    this.world.update();
   }
 }

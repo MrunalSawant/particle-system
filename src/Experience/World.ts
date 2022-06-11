@@ -1,27 +1,122 @@
 /* eslint-disable import/no-cycle */
 import * as THREE from 'three';
 import Experience from './Experience';
+import { PointSize, RayCasterThreshold } from '../Constant/Constant';
 
 export default class World {
   private experience: Experience;
 
+  private mouse!: THREE.Vector2;
+
+  private rayCaster!: THREE.Raycaster;
+
   constructor() {
     this.experience = new Experience();
+    this.mouse = new THREE.Vector2();
+    this.init();
     this.setWorld();
-    this.setLight();
+
+    const points = this.generateIndexedPointcloud(new THREE.Color(0, 1, 0), 10, 10);
+    this.experience.scene.add(points);
+    // this.setLight();
   }
 
-  private setWorld() : void {
-    const geometry = new THREE.BoxGeometry(1, 1, 1);
-    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-    const cube = new THREE.Mesh(geometry, material);
-    const edges = new THREE.EdgesGeometry(geometry);
-    const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0x000000 }));
-    this.experience.scene.add(cube);
-    this.experience.scene.add(line);
+  private init(): void {
+    this.rayCaster = new THREE.Raycaster();
+
+    this.rayCaster.params.Points = {
+      threshold: RayCasterThreshold
+    };
+    window.addEventListener('pointermove', this.onMouseMove.bind(this), false);
+    window.addEventListener('click', this.onClick.bind(this), false);
   }
 
-  private setLight() : void {
+  private onClick(): void {
+    this.rayCaster.setFromCamera(this.mouse, this.experience.camera.instance);
+    const intersects = this.rayCaster.intersectObjects(this.experience.scene.children);
+
+    const intersect = intersects.length > 0 ? intersects[0] : null;
+
+    if (intersect) {
+      console.log(intersect.index);
+    }
+  }
+
+  private onMouseMove(event: any): void {
+    this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+  }
+
+  private generatePointCloudGeometry(color: THREE.Color, width: number, length: number): THREE.BufferGeometry {
+    const geometry = new THREE.BufferGeometry();
+    const numPoints = width * length;
+
+    const positions = new Float32Array(numPoints * 3);
+    const colors = new Float32Array(numPoints * 3);
+
+    let k = 0;
+
+    for (let i = 0; i < width; i += 1) {
+      for (let j = 0; j < length; j += 1) {
+        const u = i / width;
+        const v = j / length;
+        const x = u - 0.5;
+        const y = (Math.cos(u * Math.PI * 4) + Math.sin(v * Math.PI * 8)) / 50;
+        const z = v - 0.5;
+
+        positions[3 * k] = x;
+        positions[3 * k + 1] = y;
+        positions[3 * k + 2] = z;
+
+        const intensity = (y + 0.1) * 5;
+        colors[3 * k] = color.r * intensity;
+        colors[3 * k + 1] = color.g * intensity;
+        colors[3 * k + 2] = color.b * intensity;
+
+        k += 1;
+      }
+    }
+
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    geometry.computeBoundingBox();
+
+    return geometry;
+  }
+
+  private generateIndexedPointcloud(color: THREE.Color, width: number, length: number): THREE.Points {
+    const geometry = this.generatePointCloudGeometry(color, width, length);
+    const numPoints = width * length;
+    const indices = new Uint16Array(numPoints);
+
+    let k = 0;
+
+    for (let i = 0; i < width; i += 1) {
+      for (let j = 0; j < length; j += 1) {
+        indices[k] = k;
+        k += 1;
+      }
+    }
+
+    geometry.setIndex(new THREE.BufferAttribute(indices, 1));
+
+    const material = new THREE.PointsMaterial({ size: PointSize, vertexColors: true });
+
+    return new THREE.Points(geometry, material);
+  }
+
+  private setWorld(): void {
+    // const geometry = new THREE.PlaneGeometry(1, 1, 1);
+    // const material = new THREE.PointsMaterial({ color: 0x00ff00, size: 0.5 });
+    // const cube = new THREE.Points(geometry, material);
+
+    // const edges = new THREE.EdgesGeometry(geometry);
+    // const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0x000000 }));
+    // this.experience.scene.add(cube);
+    // this.experience.scene.add(line);
+  }
+
+  private setLight(): void {
     const hemisphereLight = new THREE.HemisphereLight(0xddeeff, 0x0f0e0d, 0.5);
     hemisphereLight.position.set(20, 20, 20);
     hemisphereLight.castShadow = false;
@@ -35,5 +130,10 @@ export default class World {
 
     this.experience.scene.add(hemisphereLight);
     this.experience.scene.add(pointLight);
+  }
+
+  public update(): void {
+    // console.log(this.mouse);
+
   }
 }
