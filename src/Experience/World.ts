@@ -33,7 +33,7 @@ export default class World {
       threshold: RayCasterThreshold
     };
     window.addEventListener('pointermove', this.onMouseMove.bind(this), false);
-    window.addEventListener('click', this.onClick.bind(this), false);
+    window.addEventListener('pointermove', this.onClick.bind(this), false);
   }
 
   public getMousePosition(): THREE.Vector2 {

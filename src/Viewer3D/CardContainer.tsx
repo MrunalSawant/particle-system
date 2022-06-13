@@ -12,7 +12,7 @@ export default function CardContainer(): ReactElement {
 
     useEffect(() => {
         const experience = new Experience();
-        window.addEventListener('click', () => {
+        window.addEventListener('pointermove', () => {
             const ix = experience.world.getIndex();
             const mouse = experience.world.getMousePosition();
             if (ix) {
